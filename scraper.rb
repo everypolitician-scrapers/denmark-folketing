@@ -41,7 +41,7 @@ def scrape_party(url)
       party: tds[2].text.strip,
       party_id: CGI.parse(URI.parse(url).query)['party'].first.gsub(/[{}]/,''),
       constituency: memberships.first[/ in (.*?) from/, 1].sub('greater constituency','').strip,
-      email: box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:',''),
+      email: box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:','').tr('|/',';'),
       homepage: box.css('div.person a[href*="http"]/@href').text,
       image: box.css('div.person img/@src').text,
       memberships: memberships.join("+++"),
