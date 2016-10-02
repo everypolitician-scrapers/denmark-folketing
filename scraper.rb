@@ -140,10 +140,6 @@ class MemberPage < Page
   end
 end
 
-def noko_for(url)
-  Nokogiri::HTML(open(url).read) 
-end
-
 def scrape_party_list(url)
   PartiesPage.new(url).to_h[:parties].each do |party|
     scrape_party party[:url]
@@ -159,12 +155,5 @@ def scrape_party(url)
     ScraperWiki.save_sqlite([:id, :term], data)
   end
 end
-
-term = {
-  id: '2015',
-  name: '2015–',
-  start_date: '2015',
-}
-ScraperWiki.save_sqlite([:id], term, 'terms')
 
 scrape_party_list('http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx')
