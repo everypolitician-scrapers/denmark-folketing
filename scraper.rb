@@ -25,6 +25,11 @@ class Page
   private
 
   attr_reader :url
+
+  def absolute_url(rel)
+    return if rel.to_s.empty?
+    URI.join(url, URI.encode(URI.decode(rel)))
+  end
 end
 
 class PartiesPage < Page
@@ -32,7 +37,7 @@ class PartiesPage < Page
     noko.css('.telbogTable tr a[href*="party="]').map do |a|
       {
         name: a.text,
-        url:  add_pagesize(full_url(a.attr('href'))).to_s,
+        url:  add_pagesize(absolute_url(a.attr('href'))).to_s,
       }
     end
   end
@@ -44,10 +49,6 @@ class PartiesPage < Page
     new_args = URI.decode_www_form(uri.query || '') << ["pagesize", "100"]
     uri.query = URI.encode_www_form(new_args)
     uri
-  end
-
-  def full_url(rel)
-    URI.join(url, rel)
   end
 end
 
@@ -89,7 +90,7 @@ class PartyPageMember
   end
 
   field :source do
-    member_url
+    member_url.to_s
   end
 
   private
@@ -123,9 +124,7 @@ class MemberPage < Page
   end
 
   field :image do
-    img = box.css('div.person img/@src').text
-    return if img.to_s.empty?
-    URI.join(url, img).to_s
+    absolute_url(box.css('div.person img/@src').text).to_s
   end
 
   field :memberships do
