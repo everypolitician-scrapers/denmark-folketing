@@ -49,6 +49,55 @@ class PartiesPage < Page
   end
 end
 
+class PartyPage < Page
+  field :members do
+    noko.css('.telbogTable').xpath('.//tr[td]').map do |tr|
+      PartyPageMember.new(tr, url).to_h
+    end
+  end
+end
+
+class PartyPageMember
+  include FieldSerializer
+
+  def initialize(row, url)
+    @row = row
+    @url = url
+  end
+
+  field :id do
+    member_url.to_s[%r(/Members/(.*).aspx), 1]
+  end
+
+  field :given_name do
+    tds[0].text.strip
+  end
+
+  field :family_name do
+    tds[1].text.strip
+  end
+
+  field :party do
+    tds[2].text.strip
+  end
+
+  field :url do
+    member_url
+  end
+
+  private
+
+  attr_reader :row, :url
+
+  def tds
+    @tds ||= row.css('td')
+  end
+
+  def member_url
+    URI.join(url, row.at_css('a[href*="/Members/"]/@href').text).to_s
+  end
+end
+
 def noko_for(url)
   Nokogiri::HTML(open(url).read) 
 end
@@ -60,21 +109,19 @@ def scrape_party_list(url)
 end
 
 def scrape_party(url)
-  noko = noko_for(url)
-  noko.css('.telbogTable').xpath('.//tr[td]').each do |tr|
-    tds = tr.css('td')
-    mplink = tr.at_css('a[href*="/Members/"]/@href').text
-    mp_url = URI.join(url, URI.escape(mplink))
-    mp_noko = noko_for(mp_url)
+  ppm = PartyPage.new(url).to_h
+
+  ppm[:members].each do |memrow|
+    mp_noko = noko_for(memrow[:url])
     box = mp_noko.css('#mainform')
     memberships = box.xpath('.//strong[contains(.,"Member period")]/following-sibling::text()').map(&:text)
 
     data = { 
-      id: mp_url.to_s[%r(/Members/(.*).aspx), 1],
+      id: memrow[:id],
       name: box.css('h1').text.strip,
-      given_name: tds[0].text.strip,
-      family_name: tds[1].text.strip,
-      party: tds[2].text.strip,
+      given_name: memrow[:given_name],
+      family_name: memrow[:family_name],
+      party: memrow[:party],
       party_id: CGI.parse(URI.parse(url).query)['party'].first.gsub(/[{}]/,''),
       constituency: memberships.first[/ in (.*?) from/, 1].sub('greater constituency','').strip,
       email: box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:','').tr('|/',';'),
@@ -82,9 +129,9 @@ def scrape_party(url)
       image: box.css('div.person img/@src').text,
       memberships: memberships.join("+++"),
       term: '2015',
-      source: mp_url.to_s,
+      source: memrow[:url],
     }
-    data[:image] = URI.join(mp_url, URI.escape(data[:image])).to_s unless data[:image].to_s.empty?
+    data[:image] = URI.join(memrow[:url], URI.escape(data[:image])).to_s unless data[:image].to_s.empty?
     ScraperWiki.save_sqlite([:id, :term], data)
   end
 end
