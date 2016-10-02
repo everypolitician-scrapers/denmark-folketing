@@ -9,7 +9,7 @@ request:
     Accept-Encoding:
     - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
     Accept:
-    - '*/*'
+    - "*/*"
     User-Agent:
     - Ruby
 response:
@@ -24,21 +24,21 @@ response:
     Content-Type:
     - text/html; charset=utf-8
     Expires:
-    - '-1'
+    - "-1"
     Vary:
     - Accept-Encoding
     Set-Cookie:
-    - ASP.NET_SessionId=mqexhfjx2abny1uzlj31ew55; path=/; HttpOnly
+    - ASP.NET_SessionId=lwgxvv55jtzn1hfcoqvqk5jw; path=/; HttpOnly
     - NSC_enaxfc=ffffffff096e1f9245525d5f4f58455e445a4a423660;expires=Sun, 02-Oct-2016
-      07:11:15 GMT;path=/;httponly
+      10:57:15 GMT;path=/;httponly
     - ftenglish#sc_wede=1; path=/
     X-Powered-By:
     - ASP.NET
     Date:
-    - Sun, 02 Oct 2016 07:09:14 GMT
+    - Sun, 02 Oct 2016 10:55:15 GMT
     Content-Length:
-    - '6495'
+    - '6493'
   body:
     encoding: ASCII-8BIT
   http_version: 
-recorded_at: Sun, 02 Oct 2016 07:09:15 GMT
+recorded_at: Sun, 02 Oct 2016 10:55:15 GMT
