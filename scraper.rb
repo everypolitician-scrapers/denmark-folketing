@@ -33,9 +33,19 @@ class PartiesPage < Page
     noko.css('.telbogTable tr a[href*="party="]').map do |a|
       {
         name: a.text,
-        url:  URI.join(url, a.attr('href')).to_s,
+        url:  full_url(a.attr('href')).to_s,
       }
     end
+  end
+
+  private
+
+  # We want to add a default '?pagesize=100' to all links
+  def full_url(rel)
+    uri = URI.join(url, rel)
+    new_args = URI.decode_www_form(uri.query || '') << ["pagesize", "100"]
+    uri.query = URI.encode_www_form(new_args)
+    uri
   end
 end
 
