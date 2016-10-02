@@ -9,7 +9,7 @@ request:
     Accept-Encoding:
     - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
     Accept:
-    - '*/*'
+    - "*/*"
     User-Agent:
     - Ruby
 response:
@@ -24,7 +24,7 @@ response:
     Cache-Control:
     - no-cache
     Location:
-    - /Members/Members_in_party_groups.aspx
+    - "/Members/Members_in_party_groups.aspx"
     Content-Length:
     - '0'
   body:
