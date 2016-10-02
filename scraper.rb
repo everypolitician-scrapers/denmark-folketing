@@ -1,25 +1,51 @@
 #!/bin/env ruby
 # encoding: utf-8
 
+require 'cgi'
+require 'field_serializer'
 require 'nokogiri'
 require 'open-uri'
-require 'scraperwiki'
-require 'cgi'
 require 'pry'
+require 'scraperwiki'
 
 # require 'open-uri/cached'
 # OpenURI::Cache.cache_path = '.cache'
 require 'scraped_page_archive/open-uri'
+
+class Page
+  include FieldSerializer
+
+  def initialize(url)
+    @url = url
+  end
+
+  def noko
+    @noko ||= Nokogiri::HTML(open(url).read)
+  end
+
+  private
+
+  attr_reader :url
+end
+
+class PartiesPage < Page
+  field :parties do
+    noko.css('.telbogTable tr a[href*="party="]').map do |a|
+      {
+        name: a.text,
+        url:  URI.join(url, a.attr('href')).to_s,
+      }
+    end
+  end
+end
 
 def noko_for(url)
   Nokogiri::HTML(open(url).read) 
 end
 
 def scrape_party_list(url)
-  noko = noko_for(url)
-  noko.css('.telbogTable tr a[href*="party="]/@href').map(&:text).uniq.each do |link|
-    party_url = URI.join(url, URI.escape(link)).to_s + "&pageSize=100"
-    scrape_party party_url
+  PartiesPage.new(url).to_h[:parties].each do |party|
+    scrape_party party[:url]
   end
 end
 
