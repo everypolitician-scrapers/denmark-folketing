@@ -1,5 +1,6 @@
 #!/bin/env ruby
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'field_serializer'
 require 'nokogiri'
@@ -46,7 +47,7 @@ class PartiesPage < Page
 
   # We want to add a default '?pagesize=100' to all links
   def add_pagesize(uri)
-    new_args = URI.decode_www_form(uri.query || '') << ["pagesize", "100"]
+    new_args = URI.decode_www_form(uri.query || '') << %w(pagesize 100)
     uri.query = URI.encode_www_form(new_args)
     uri
   end
@@ -70,7 +71,7 @@ class PartyPageMember
   end
 
   field :id do
-    member_url.to_s[%r(/Members/(.*).aspx), 1]
+    member_url.to_s[%r{/Members/(.*).aspx}, 1]
   end
 
   field :given_name do
@@ -86,7 +87,7 @@ class PartyPageMember
   end
 
   field :party_id do
-    CGI.parse(URI.parse(url).query)['party'].first.gsub(/[{}]/,'')
+    CGI.parse(URI.parse(url).query)['party'].first.gsub(/[{}]/, '')
   end
 
   field :source do
@@ -112,11 +113,11 @@ class MemberPage < Page
   end
 
   field :constituency do
-    memberships.first[/ in (.*?) from/, 1].sub('greater constituency','').strip
+    memberships.first[/ in (.*?) from/, 1].sub('greater constituency', '').strip
   end
 
   field :email do
-    box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:','').tr('|/',';')
+    box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:', '').tr('|/', ';')
   end
 
   field :homepage do
@@ -128,7 +129,7 @@ class MemberPage < Page
   end
 
   field :memberships do
-    memberships.join("+++")
+    memberships.join('+++')
   end
 
   private
@@ -154,7 +155,7 @@ def scrape_party(url)
   ppm[:members].each do |memrow|
     mem = MemberPage.new(memrow[:source])
     data = memrow.merge(mem.to_h).merge(term: '2015')
-    ScraperWiki.save_sqlite([:id, :term], data)
+    ScraperWiki.save_sqlite(%i(id term), data)
   end
 end
 
