@@ -1,0 +1,44 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/searchResults.aspx?pagesize=100&party=%7BA726CCAA-9968-4DCE-A6CD-972D6BFA0934%7D
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 200
+    message: OK
+  headers:
+    Cache-Control:
+    - no-cache, no-store
+    Pragma:
+    - no-cache
+    Content-Type:
+    - text/html; charset=utf-8
+    Expires:
+    - "-1"
+    Vary:
+    - Accept-Encoding
+    Set-Cookie:
+    - ASP.NET_SessionId=vpshwa45itriglmv0ro1mt45; path=/; HttpOnly
+    - NSC_enaxfc=ffffffff096e1f9245525d5f4f58455e445a4a423660;expires=Sun, 02-Oct-2016
+      11:52:10 GMT;path=/;httponly
+    - ftenglish#sc_wede=1; path=/
+    X-Powered-By:
+    - ASP.NET
+    Date:
+    - Sun, 02 Oct 2016 11:50:10 GMT
+    Content-Length:
+    - '7318'
+  body:
+    encoding: ASCII-8BIT
+  http_version: 
+recorded_at: Sun, 02 Oct 2016 11:50:10 GMT
