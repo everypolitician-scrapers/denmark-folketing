@@ -1,0 +1,44 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/Members/carsten-kudsk.aspx
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 200
+    message: OK
+  headers:
+    Cache-Control:
+    - no-cache, no-store
+    Pragma:
+    - no-cache
+    Content-Type:
+    - text/html; charset=utf-8
+    Expires:
+    - "-1"
+    Vary:
+    - Accept-Encoding
+    Set-Cookie:
+    - ASP.NET_SessionId=bmoxgauwq1oouxiqid50eb45; path=/; HttpOnly
+    - NSC_enaxfc=ffffffff096e1f9445525d5f4f58455e445a4a423660;expires=Tue, 04-Oct-2016
+      13:32:33 GMT;path=/;httponly
+    - ftenglish#sc_wede=1; path=/
+    X-Powered-By:
+    - ASP.NET
+    Date:
+    - Tue, 04 Oct 2016 13:30:32 GMT
+    Content-Length:
+    - '6580'
+  body:
+    encoding: ASCII-8BIT
+  http_version: 
+recorded_at: Tue, 04 Oct 2016 13:30:33 GMT
