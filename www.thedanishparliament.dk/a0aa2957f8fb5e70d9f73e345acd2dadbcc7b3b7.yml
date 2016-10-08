@@ -28,17 +28,17 @@ response:
     Vary:
     - Accept-Encoding
     Set-Cookie:
-    - ASP.NET_SessionId=a40bklrbktwez4fllysz1h55; path=/; HttpOnly
+    - ASP.NET_SessionId=0vtniw45h4v0ae45qboi1wje; path=/; HttpOnly
     - NSC_enaxfc=ffffffff096e1f9245525d5f4f58455e445a4a423660;expires=Sat, 08-Oct-2016
-      18:54:20 GMT;path=/;httponly
+      20:34:02 GMT;path=/;httponly
     - ftenglish#sc_wede=1; path=/
     X-Powered-By:
     - ASP.NET
     Date:
-    - Sat, 08 Oct 2016 18:52:20 GMT
+    - Sat, 08 Oct 2016 20:32:01 GMT
     Content-Length:
-    - '7013'
+    - '7004'
   body:
     encoding: ASCII-8BIT
   http_version: 
-recorded_at: Sat, 08 Oct 2016 18:52:20 GMT
+recorded_at: Sat, 08 Oct 2016 20:32:02 GMT
