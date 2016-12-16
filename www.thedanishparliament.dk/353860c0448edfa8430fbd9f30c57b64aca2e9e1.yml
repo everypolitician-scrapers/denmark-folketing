@@ -1,0 +1,44 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/Members/brigitte-klintskov-jerkel.aspx
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 200
+    message: OK
+  headers:
+    Cache-Control:
+    - no-cache, no-store
+    Pragma:
+    - no-cache
+    Content-Type:
+    - text/html; charset=utf-8
+    Expires:
+    - "-1"
+    Vary:
+    - Accept-Encoding
+    Set-Cookie:
+    - ASP.NET_SessionId=1g2qjiucph5xn2esespxhn45; path=/; HttpOnly
+    - NSC_enaxfc=ffffffff096e1f9445525d5f4f58455e445a4a423660;expires=Fri, 16-Dec-2016
+      07:08:24 GMT;path=/;httponly
+    - ftenglish#sc_wede=1; path=/
+    X-Powered-By:
+    - ASP.NET
+    Date:
+    - Fri, 16 Dec 2016 07:06:24 GMT
+    Content-Length:
+    - '6452'
+  body:
+    encoding: ASCII-8BIT
+  http_version: 
+recorded_at: Fri, 16 Dec 2016 07:06:25 GMT
