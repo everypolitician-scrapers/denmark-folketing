@@ -2,43 +2,27 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require 'field_serializer'
-require 'nokogiri'
-require 'open-uri'
 require 'pry'
+require 'scraped'
 require 'scraperwiki'
 
-# require 'open-uri/cached'
-# OpenURI::Cache.cache_path = '.cache'
-require 'scraped_page_archive/open-uri'
+require 'open-uri/cached'
+OpenURI::Cache.cache_path = '.cache'
+# require 'scraped_page_archive/open-uri'
 
-class Page
-  include FieldSerializer
-
-  def initialize(url)
-    @url = url
-  end
-
-  def noko
-    @noko ||= Nokogiri::HTML(open(url).read)
-  end
-
-  private
-
-  attr_reader :url
-
-  def absolute_url(rel)
-    return if rel.to_s.empty?
-    URI.join(url, URI.encode(URI.decode(rel)))
-  end
+def scrape(h)
+  url, klass = h.to_a.first
+  klass.new(response: Scraped::Request.new(url: url).response)
 end
 
-class PartiesPage < Page
+class PartiesPage < Scraped::HTML
+  decorator Scraped::Response::Decorator::AbsoluteUrls
+
   field :parties do
     noko.css('.telbogTable tr a[href*="party="]').map do |a|
       {
         name: a.text,
-        url:  add_pagesize(absolute_url(a.attr('href'))).to_s,
+        url:  add_pagesize(a.attr('href')).to_s,
       }
     end
   end
@@ -46,32 +30,29 @@ class PartiesPage < Page
   private
 
   # We want to add a default '?pagesize=100' to all links
-  def add_pagesize(uri)
+  def add_pagesize(url)
+    uri = URI.parse(url)
     new_args = URI.decode_www_form(uri.query || '') << %w(pagesize 100)
     uri.query = URI.encode_www_form(new_args)
-    uri
+    uri.to_s
   end
 end
 
-class PartyPage < Page
+class PartyPage < Scraped::HTML
+  decorator Scraped::Response::Decorator::AbsoluteUrls
+
   field :members do
     noko.css('.telbogTable').xpath('.//tr[td]').map do |tr|
-      PartyPageMember.new(tr, url).to_h
+      fragment tr => PartyPageMember
     end
   end
 end
 
-class PartyPageMember
-  include FieldSerializer
+class PartyPageMember < Scraped::HTML
   require 'cgi'
 
-  def initialize(row, url)
-    @row = row
-    @url = url
-  end
-
   field :id do
-    member_url.to_s[%r{/Members/(.*).aspx}, 1]
+    source.to_s[%r{/Members/(.*).aspx}, 1]
   end
 
   field :given_name do
@@ -91,29 +72,26 @@ class PartyPageMember
   end
 
   field :source do
-    member_url.to_s
+    noko.at_css('a[href*="/Members/"]/@href').text
   end
 
   private
 
-  attr_reader :row, :url
-
   def tds
-    @tds ||= row.css('td')
-  end
-
-  def member_url
-    URI.join(url, row.at_css('a[href*="/Members/"]/@href').text).to_s
+    noko.css('td')
   end
 end
 
-class MemberPage < Page
+class MemberPage < Scraped::HTML
+  decorator Scraped::Response::Decorator::AbsoluteUrls
+
   field :name do
     box.css('h1').text.strip
   end
 
   field :constituency do
-    memberships.first[/ in (.*?) from/, 1].sub('greater constituency', '').strip
+    # TODO this isn't quite right yet
+    raw_memberships.first.to_s[/ in (.*?) from/, 1].to_s.sub('greater constituency', '').strip
   end
 
   field :email do
@@ -125,11 +103,13 @@ class MemberPage < Page
   end
 
   field :image do
-    absolute_url(box.css('div.person img/@src').text).to_s
+    img = box.css('div.person img/@src').text
+    binding.pry if img.start_with? '~'
+    img
   end
 
   field :memberships do
-    memberships.join('+++')
+    raw_memberships.join('+++')
   end
 
   private
@@ -138,25 +118,23 @@ class MemberPage < Page
     noko.css('#mainform')
   end
 
-  def memberships
+  def raw_memberships
     box.xpath('.//strong[contains(.,"Member period")]/following-sibling::text()').map(&:text)
   end
 end
 
-def scrape_party_list(url)
-  PartiesPage.new(url).to_h[:parties].each do |party|
-    scrape_party party[:url]
-  end
-end
-
 def scrape_party(url)
-  ppm = PartyPage.new(url).to_h
-
-  ppm[:members].each do |memrow|
-    mem = MemberPage.new(memrow[:source])
-    data = memrow.merge(mem.to_h).merge(term: '2015')
-    ScraperWiki.save_sqlite(%i(id term), data)
+  members = scrape(url => PartyPage).members
+  # raise "No members in #{url}" unless members.any?
+  members.each do |memrow|
+    mem = scrape(memrow.source => MemberPage)
+    data = memrow.to_h.merge(mem.to_h).merge(term: '2015')
+    puts data
+    # ScraperWiki.save_sqlite(%i(id term), data)
   end
 end
 
-scrape_party_list('http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx')
+start = 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx'
+parties = scrape(start => PartiesPage).parties
+raise "No parties to scrape" unless parties.any?
+parties.each { |party| scrape_party party[:url] }
