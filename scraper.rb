@@ -183,7 +183,7 @@ end
 class DenmarkFolketing < EveryPolitician::Scraper
   def data
     scrape(url => PartiesPage).parties.flat_map do |party|
-      scrape(party.url => PartyPage).members.flat_map do |memrow|
+      scrape(party.url => PartyPage).members.map do |memrow|
         memrow.to_h.merge(scrape(memrow.source => MemberPage).to_h)
       end
     end
