@@ -180,19 +180,17 @@ module EveryPolitician
   end
 end
 
-def scrape(h)
-  url, klass = h.to_a.first
-  klass.new(response: Scraped::Request.new(url: url).response)
-end
-
-start = 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx'
-
-ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
-scrape(start => PartiesPage).parties.each do |party|
-  scrape(party.url => PartyPage).members.each do |memrow|
-    mem = scrape(memrow.source => MemberPage)
-    data = memrow.to_h.merge(mem.to_h).merge(term: '2015')
-    # puts data.reject { |k, v| v.to_s.empty? }.sort_by { |k, v| k }.to_h
-    ScraperWiki.save_sqlite(%i(id term), data)
+class DenmarkFolketing < EveryPolitician::Scraper
+  def data
+    scrape(url => PartiesPage).parties.flat_map do |party|
+      scrape(party.url => PartyPage).members.flat_map do |memrow|
+        memrow.to_h.merge(scrape(memrow.source => MemberPage).to_h)
+      end
+    end
   end
 end
+
+DenmarkFolketing.new(
+  url: 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx',
+  default_data: { term: '2015' }
+).run
