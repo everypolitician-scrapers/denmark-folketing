@@ -11,7 +11,7 @@ require 'scraperwiki'
 require 'scraped_page_archive/open-uri'
 
 class FolketingPage < Scraped::HTML
-  decorator Scraped::Response::Decorator::AbsoluteUrls
+  decorator Scraped::Response::Decorator::CleanUrls
 end
 
 class PartiesPage < FolketingPage
