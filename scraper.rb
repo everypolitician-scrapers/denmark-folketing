@@ -128,7 +128,7 @@ end
 
 start = 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx'
 
-ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
+ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
 scrape(start => PartiesPage).parties.each do |party|
   scrape(party.url => PartyPage).members.each do |memrow|
     mem = scrape(memrow.source => MemberPage)
