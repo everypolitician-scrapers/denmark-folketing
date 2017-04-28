@@ -6,13 +6,11 @@ require 'pry'
 require 'scraped'
 require 'scraperwiki'
 
+require_rel 'lib'
+
 # require 'open-uri/cached'
 # OpenURI::Cache.cache_path = '.cache'
 require 'scraped_page_archive/open-uri'
-
-class FolketingPage < Scraped::HTML
-  decorator Scraped::Response::Decorator::CleanUrls
-end
 
 class PartiesPage < FolketingPage
   field :parties do
