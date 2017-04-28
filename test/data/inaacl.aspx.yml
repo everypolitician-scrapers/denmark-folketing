@@ -1,0 +1,14 @@
+---
+:class: MemberPage
+:url: http://www.thedanishparliament.dk/Members/inaacl.aspx
+:to_h:
+  :name: Aaja Chemnitz Larsen
+  :constituency: Greenland
+  :email: aaja.larsen@ft.dk
+  :homepage: http://www.facebook.com/aaja2014
+  :image: http://www.thedanishparliament.dk/Members/~/media/CV/Foto/2015/NA/Aaja%20Chemnitz%20Larsen/Aaja_Chemnitz_Larsen_133.jpg.ashx
+  # TODO: memberships data needs tidying and multiple memberships should be
+  # delimited with a semi-colon. (Issue: #8)
+  :memberships: Member of Parliament for Inuit Ataqatigiit in Greenland from June
+    18th 2015.+++Candidate for Inuit Ataqatigiit in Greenland nomination district  from
+    2014.
