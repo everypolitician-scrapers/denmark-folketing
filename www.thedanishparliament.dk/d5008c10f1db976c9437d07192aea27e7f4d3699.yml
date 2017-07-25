@@ -1,0 +1,31 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/eKpQi/searchResults.aspx?pagesize=100&party=%7B605B4387-1756-4AC0-8461-32B0A7A0B19C%7D
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 302
+    message: Found
+  headers:
+    Connection:
+    - close
+    Pragma:
+    - no-cache
+    Cache-Control:
+    - no-cache
+    Location:
+    - "/searchResults.aspx?party=%7B605B4387-1756-4AC0-8461-32B0A7A0B19C%7D&pagesize=100"
+  body:
+    encoding: UTF-8
+  http_version: 
+recorded_at: Tue, 25 Jul 2017 08:25:06 GMT
