@@ -1,0 +1,31 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/VapOO/Members/shekr.aspx
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 302
+    message: Found
+  headers:
+    Connection:
+    - close
+    Pragma:
+    - no-cache
+    Cache-Control:
+    - no-cache
+    Location:
+    - "/Members/shekr.aspx"
+  body:
+    encoding: UTF-8
+  http_version: 
+recorded_at: Tue, 25 Jul 2017 05:48:19 GMT
