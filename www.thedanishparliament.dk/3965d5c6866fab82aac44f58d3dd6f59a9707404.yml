@@ -1,0 +1,44 @@
+---
+request:
+  method: get
+  uri: http://www.thedanishparliament.dk/Members/nikolaj%20amstrup.aspx
+  body:
+    encoding: US-ASCII
+    string: ''
+  headers:
+    Accept-Encoding:
+    - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+    Accept:
+    - "*/*"
+    User-Agent:
+    - Ruby
+response:
+  status:
+    code: 200
+    message: OK
+  headers:
+    Cache-Control:
+    - no-cache, no-store
+    Pragma:
+    - no-cache
+    Content-Type:
+    - text/html; charset=utf-8
+    Expires:
+    - "-1"
+    Vary:
+    - Accept-Encoding
+    Set-Cookie:
+    - ASP.NET_SessionId=gxrv0x55os0mn555xz0ri245; path=/; HttpOnly
+    - NSC_enaxfc=ffffffff096e1f9445525d5f4f58455e445a4a423660;expires=Thu, 14-Sep-2017
+      18:08:46 GMT;path=/;httponly
+    - ftenglish#sc_wede=1; path=/
+    X-Powered-By:
+    - ASP.NET
+    Date:
+    - Thu, 14 Sep 2017 18:06:46 GMT
+    Content-Length:
+    - '6619'
+  body:
+    encoding: ASCII-8BIT
+  http_version: 
+recorded_at: Thu, 14 Sep 2017 18:06:46 GMT
