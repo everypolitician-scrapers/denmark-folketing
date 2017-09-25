@@ -83,19 +83,20 @@ class PartyPageMember < Scraped::HTML
   end
 end
 
-def scrape(h)
+def scraper(h)
   url, klass = h.to_a.first
   klass.new(response: Scraped::Request.new(url: url).response)
 end
 
 start = 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx'
 
-ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
-scrape(start => PartiesPage).parties.each do |party|
-  scrape(party.url => PartyPage).members.each do |memrow|
-    mem = scrape(memrow.source => MemberPage)
-    data = memrow.to_h.merge(mem.to_h).merge(term: '2015')
-    puts data.reject { |_, v| v.to_s.empty? }.sort_by { |k, _| k }.to_h if ENV['MORPH_DEBUG']
-    ScraperWiki.save_sqlite(%i[id term], data)
+data = scraper(start => PartiesPage).parties.flat_map do |party|
+  scraper(party.url => PartyPage).members.map do |memrow|
+    mem = scraper(memrow.source => MemberPage)
+    memrow.to_h.merge(mem.to_h).merge(term: '2015')
   end
 end
+data.each { |mem| puts mem.reject { |_, v| v.to_s.empty? }.sort_by { |k, _| k }.to_h } if ENV['MORPH_DEBUG']
+
+ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
+ScraperWiki.save_sqlite(%i[id term], data)
