@@ -95,7 +95,7 @@ scrape(start => PartiesPage).parties.each do |party|
   scrape(party.url => PartyPage).members.each do |memrow|
     mem = scrape(memrow.source => MemberPage)
     data = memrow.to_h.merge(mem.to_h).merge(term: '2015')
-    # puts data.reject { |k, v| v.to_s.empty? }.sort_by { |k, v| k }.to_h
+    puts data.reject { |_, v| v.to_s.empty? }.sort_by { |k, _| k }.to_h if ENV['MORPH_DEBUG']
     ScraperWiki.save_sqlite(%i[id term], data)
   end
 end
