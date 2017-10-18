@@ -4,7 +4,7 @@ require_relative 'folketing_page'
 
 class MemberPage < FolketingPage
   field :name do
-    box.css('h1').text.tidy
+    box.css('h1').map(&:text).map(&:tidy).first
   end
 
   field :constituency do
@@ -12,7 +12,7 @@ class MemberPage < FolketingPage
   end
 
   field :email do
-    box.css('div.person a[href*="mailto:"]/@href').text.gsub('mailto:', '').tr('|/', ';')
+    box.css('div.person a[href*="mailto:"]/@href').map(&:text).map { |e| e.gsub('mailto:', '').tr('|/', ';') }.uniq.join(';')
   end
 
   field :homepage do
