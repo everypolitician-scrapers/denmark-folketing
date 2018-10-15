@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'pry'
+require 'resolv-replace' # https://github.com/ruby/ruby/pull/597#issuecomment-40507119
 require 'scraped'
 require 'scraperwiki'
 
