@@ -43,7 +43,7 @@ end
 
 class PartyPage < FolketingPage
   field :members do
-    noko.css('.telbogTable').xpath('.//tr[td]').map do |tr|
+    noko.css('.ankiro-results').xpath('.//tr[td]').map do |tr|
       fragment tr => PartyPageMember
     end
   end
@@ -53,19 +53,19 @@ class PartyPageMember < Scraped::HTML
   require 'cgi'
 
   field :id do
-    source.to_s[%r{/Members/(.*).aspx}, 1]
+    noko.attr('onclick')[/members\/(.*?)'/, 1]
   end
 
   field :given_name do
-    tds[0].text.tidy
-  end
-
-  field :family_name do
     tds[1].text.tidy
   end
 
-  field :party do
+  field :family_name do
     tds[2].text.tidy
+  end
+
+  field :party do
+    tds[3].text.tidy
   end
 
   field :party_id do
@@ -73,7 +73,7 @@ class PartyPageMember < Scraped::HTML
   end
 
   field :source do
-    noko.at_css('a[href*="/Members/"]/@href').text
+    URI.encode('https://www.thedanishparliament.dk/members/' + id)
   end
 
   private
@@ -88,15 +88,13 @@ def scraper(h)
   klass.new(response: Scraped::Request.new(url: url).response)
 end
 
-start = 'http://www.thedanishparliament.dk/Members/Members_in_party_groups.aspx'
-
+start = 'https://www.thedanishparliament.dk/en/members/members-in-party-groups'
 data = scraper(start => PartiesPage).parties.flat_map do |party|
   scraper(party.url => PartyPage).members.map do |memrow|
-    mem = scraper(memrow.source => MemberPage)
-    memrow.to_h.merge(mem.to_h).merge(term: '2015')
+    memrow.to_h.merge(scraper(memrow.source => MemberPage).to_h)
   end
 end
 data.each { |mem| puts mem.reject { |_, v| v.to_s.empty? }.sort_by { |k, _| k }.to_h } if ENV['MORPH_DEBUG']
 
 ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
-ScraperWiki.save_sqlite(%i[id term], data)
+ScraperWiki.save_sqlite(%i[id], data)
